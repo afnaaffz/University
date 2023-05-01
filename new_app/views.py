@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from new_app.forms import EducationFormSet
+from django.forms import modelformset_factory
 
 from new_app.forms import CandidateForm, EducationForm
 from new_app.models import Candidate, Education
@@ -61,6 +62,33 @@ def view(request):
     data = Education.objects.all()
     return render(request, 'view.html', {'data': data})
 
+
+def update_candidate(request, candidate_id):
+    candidate = get_object_or_404(Candidate, pk=candidate_id)
+    EducationFormSet = modelformset_factory(
+        Education, fields=('course', 'university', 'year'), extra=2, can_delete=True
+    )
+    if request.method == 'POST':
+        candidate_form = CandidateForm(request.POST, instance=candidate)
+        education_formset = EducationFormSet(
+            request.POST, queryset=Education.objects.filter(candidate=candidate)
+        )
+        if candidate_form.is_valid() and education_formset.is_valid():
+            candidate_form.save()
+            instances = education_formset.save(commit=False)
+            for instance in instances:
+                instance.candidate = candidate
+                instance.save()
+            education_formset.save_m2m()
+            return redirect('education')
+    else:
+        candidate_form = CandidateForm(instance=candidate)
+        education_formset = EducationFormSet(queryset=Education.objects.filter(candidate=candidate))
+    return render(request, 'update.html', {
+        'candidate': candidate,
+        'candidate_form': candidate_form,
+        'education_formset': education_formset
+    })
 
 
 def delete(request,id):

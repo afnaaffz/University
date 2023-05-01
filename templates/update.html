@@ -1,0 +1,58 @@
+{% extends 'indexx.html' %}
+
+{% block content %}
+  <h1>Update Candidate</h1>
+  <form method="post">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="{{ candidate.name }}">
+    <br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ candidate.email }}">
+    <br>
+    <hr>
+    <h2>Education</h2>
+    {{ education_formset.management_form }}
+    {% for form in education_formset.forms %}
+      <div class="education-form">
+        {{ form.as_p }}
+        <button type="button" class="remove-form">Remove</button>
+      </div>
+    {% endfor %}
+    <button type="button" id="add-education">Add Education</button>
+    <br><br>
+    <button type="submit">Update Candidate</button>
+  </form>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function() {
+      // add education form
+      $('#add-education').click(function() {
+        var formCount = parseInt($('#id_education_set-TOTAL_FORMS').val());
+        var row = $('.education-form:first').clone(false).get(0);
+        $(row).removeAttr('id').insertAfter($('.education-form:last'));
+        $(row).children().not(':last').each(function() {
+          var name = $(this).attr('name').replace('-' + (formCount-1) + '-', '-' + formCount + '-');
+          $(this).attr({'name': name, 'id': 'id_' + name});
+        });
+        $(row).find('input[type="text"], select').val('');
+        $('#id_education_set-TOTAL_FORMS').val(formCount + 1);
+      });
+
+      // remove education form
+      $(document).on('click', '.remove-form', function() {
+        $(this).closest('.education-form').remove();
+        var forms = $('.education-form');
+        $('#id_education_set-TOTAL_FORMS').val(forms.length);
+        for (var i=0, formCount=forms.length; i<formCount; i++) {
+          $(forms.get(i)).find(':input').each(function() {
+            var name = $(this).attr('name').replace(/\d+/g, i);
+            $(this).attr({'name': name, 'id': 'id_' + name});
+          });
+        }
+      });
+    });
+  </script>
+{% endblock %}
