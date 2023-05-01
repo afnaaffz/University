@@ -1,0 +1,29 @@
+{% extends "indexx.html" %}
+{% block content %}
+
+<form action="submit_education.php" method="post">
+    <table id="dataTable" width="350px">
+        <thead>
+            <tr>
+                <th>Delete</th>
+                <th>Course</th>
+                <th>University</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for education in educations %}
+            <tr>
+                <td><input type="button" name="button{{ forloop.counter }}" value="Delete" onclick="removeRow('button{{ forloop.counter }}')"></td>
+                <td><input type="text" value="{{ education.course }}" placeholder="Course" id="course" name="course_{{ forloop.counter0 }}" ></td>
+                <td><input type="text" value="{{ education.university }}" placeholder="University" id="university" name="university_{{ forloop.counter0 }}" ></td>
+                <td><input type="text" value="{{ education.start_date }}" placeholder="Start Date" id="start_date" name="start_date_{{ forloop.counter0 }}" ></td>
+                <td><input type="text" value="{{ education.end_date }}" placeholder="End Date" id="end_date" name="end_date_{{ forloop.counter0 }}" ></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Submit">
+</form>
+    {% endblock %}

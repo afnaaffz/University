@@ -1,0 +1,42 @@
+
+{% extends "indexx.html" %}
+{% block content %}
+
+<div class="card" style="width: 65rem;">
+  <div class="card-body">
+    <h5 class="card-title">Educations View</h5>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">SL</th>
+      <th scope="col">NAME</th>
+            <th scope="col">EMAIL</th>
+      <th scope="col">COURSE</th>
+      <th scope="col">UNIVERSITY</th>
+        <th scope="col">YEAR</th>
+
+    </tr>
+  </thead>
+  <tbody>
+      {% for i in data %}
+    <tr>
+      <td>{{forloop.counter}}</td>
+        <td>{{i.candidate.name}}</td>
+        <td>{{i.candidate.email}}</td>
+      <td>{{i.course}}</td>
+        <td>{{i.university}}</td>
+                <td>{{i.year}}</td>
+
+    </tr>
+
+
+{% endfor %}
+  </tbody>
+  </table>
+    {% endblock %}
+
+
+        </div>
+</div>
+</div>
